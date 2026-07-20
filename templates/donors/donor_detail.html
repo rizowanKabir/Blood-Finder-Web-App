@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}{{ donor.get_full_name }} — Blood Finder{% endblock %}
+{% block content %}
+<section class="py-5">
+  <div class="container" style="max-width:760px;">
+    <div class="glass-card p-4 p-md-5 fade-in-up">
+      <div class="row align-items-center g-4">
+        <div class="col-md-4 text-center">
+          <div class="donor-avatar donor-avatar-lg mx-auto">
+            {% if donor.user.profile_picture %}<img src="{{ donor.user.profile_picture.url }}" alt="{{ donor.get_full_name }}">
+            {% else %}<i class="bi bi-person-fill"></i>{% endif %}
+          </div>
+          <div class="blood-group-chip blood-group-chip-lg mt-3">{{ donor.blood_group }}</div>
+        </div>
+        <div class="col-md-8">
+          <h3 class="fw-700 mb-1">{{ donor.get_full_name }}</h3>
+          <p class="text-muted mb-2"><i class="bi bi-geo-alt-fill me-1"></i>{{ donor.area }}, {{ donor.district }}, {{ donor.division }}</p>
+          <div class="d-flex gap-2 flex-wrap mb-3">
+            <span class="badge {% if donor.is_available %}bg-success{% else %}bg-secondary{% endif %} px-3 py-2">
+              {% if donor.is_available %}Available Now{% else %}Currently Unavailable{% endif %}</span>
+            {% if donor.is_eligible_to_donate %}
+              <span class="badge bg-info text-dark px-3 py-2">Eligible to Donate</span>
+            {% else %}
+              <span class="badge bg-warning text-dark px-3 py-2">Eligible in {{ donor.days_until_eligible }} days</span>
+            {% endif %}
+            <span class="badge bg-light text-dark px-3 py-2 border">{{ donor.total_donations }} donation{{ donor.total_donations|pluralize }}</span>
+          </div>
+
+          {% if request.user.is_authenticated %}
+            <ul class="list-unstyled donor-contact-list">
+              <li><i class="bi bi-telephone-fill me-2"></i>{{ donor.user.phone_number|default:"Not provided" }}</li>
+              <li><i class="bi bi-envelope-fill me-2"></i>{{ donor.user.email }}</li>
+            </ul>
+          {% else %}
+            <div class="alert-soft-info mb-3"><i class="bi bi-lock-fill me-2"></i>
+              <a href="{% url 'accounts:login' %}">Login</a> to view contact details.</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <hr class="my-4">
+      <div class="row g-3 text-muted small">
+        <div class="col-6 col-md-3"><strong class="d-block text-dark">Age</strong>{{ donor.age }}</div>
+        <div class="col-6 col-md-3"><strong class="d-block text-dark">Gender</strong>{{ donor.get_gender_display }}</div>
+        <div class="col-6 col-md-3"><strong class="d-block text-dark">Weight</strong>{{ donor.weight }} kg</div>
+        <div class="col-6 col-md-3"><strong class="d-block text-dark">Last Donation</strong>{{ donor.last_donation_date|default:"—" }}</div>
+        {% if donor.occupation %}<div class="col-6 col-md-3"><strong class="d-block text-dark">Occupation</strong>{{ donor.occupation }}</div>{% endif %}
+      </div>
+
+      {% if request.user == donor.user %}
+      <div class="d-flex gap-2 mt-4 flex-wrap">
+        <a href="{% url 'donors:edit' donor.pk %}" class="btn btn-outline-glass"><i class="bi bi-pencil-fill me-1"></i>Edit Profile</a>
+        <form method="post" action="{% url 'donors:toggle_availability' donor.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-gradient">
+            {% if donor.is_available %}Mark Unavailable{% else %}Mark Available{% endif %}</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

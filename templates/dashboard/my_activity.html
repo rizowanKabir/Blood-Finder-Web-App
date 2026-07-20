@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}My Activity — Blood Finder{% endblock %}
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <h2 class="fw-700 mb-4 fade-in-up">My Activity</h2>
+
+    <ul class="nav nav-tabs bf-tabs fade-in-up" id="activityTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#requestsTab" type="button">
+          <i class="bi bi-clipboard2-pulse-fill me-1"></i> My Requests ({{ my_requests|length }})</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#donationsTab" type="button">
+          <i class="bi bi-heart-pulse-fill me-1"></i> My Donations ({{ my_donations|length }})</button>
+      </li>
+    </ul>
+
+    <div class="tab-content bf-tab-content fade-in-up">
+      <div class="tab-pane fade show active" id="requestsTab">
+        {% if my_requests %}
+        <div class="table-responsive">
+          <table class="table bf-table align-middle">
+            <thead><tr><th>Patient</th><th>Blood Group</th><th>Hospital</th><th>Status</th><th>Required Date</th><th></th></tr></thead>
+            <tbody>
+              {% for r in my_requests %}
+              <tr>
+                <td>{{ r.patient_name }}</td>
+                <td><span class="blood-group-chip blood-group-chip-sm">{{ r.blood_group_needed }}</span></td>
+                <td>{{ r.hospital }}</td>
+                <td><span class="badge {{ r.status_badge_class }}">{{ r.get_status_display }}</span></td>
+                <td>{{ r.required_date }}</td>
+                <td><a href="{{ r.get_absolute_url }}" class="btn btn-sm btn-outline-glass">View</a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p class="text-muted py-4">You haven't posted any blood requests yet. <a href="{% url 'blood_requests:create' %}">Post one now</a>.</p>
+        {% endif %}
+      </div>
+      <div class="tab-pane fade" id="donationsTab">
+        {% if my_donations %}
+        <div class="table-responsive">
+          <table class="table bf-table align-middle">
+            <thead><tr><th>Patient</th><th>Blood Group</th><th>Hospital</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              {% for r in my_donations %}
+              <tr>
+                <td>{{ r.patient_name }}</td>
+                <td><span class="blood-group-chip blood-group-chip-sm">{{ r.blood_group_needed }}</span></td>
+                <td>{{ r.hospital }}</td>
+                <td><span class="badge {{ r.status_badge_class }}">{{ r.get_status_display }}</span></td>
+                <td><a href="{{ r.get_absolute_url }}" class="btn btn-sm btn-outline-glass">View</a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p class="text-muted py-4">You haven't accepted any donation requests yet. <a href="{% url 'blood_requests:list' %}">Browse open requests</a>.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

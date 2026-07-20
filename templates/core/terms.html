@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Terms of Service — Blood Finder{% endblock %}
+{% block content %}
+<section class="py-5">
+  <div class="container" style="max-width:820px;">
+    <div class="text-center mb-5 fade-in-up">
+      <span class="section-eyebrow">Legal</span>
+      <h1 class="page-hero-heading">Terms of Service</h1>
+      <p class="text-muted">Last updated: {% now "F Y" %}</p>
+    </div>
+    <div class="glass-card p-4 p-md-5 fade-in-up legal-content">
+      <h5>1. Acceptance of Terms</h5>
+      <p>By creating an account on Blood Finder, you agree to these terms. If you do not agree, please
+        do not use the platform.</p>
+
+      <h5>2. What Blood Finder Is — and Isn't</h5>
+      <p>Blood Finder is a directory and connection tool that helps donors and recipients find each other.
+        We are not a medical provider, blood bank, or courier service, and we do not verify medical
+        eligibility to donate — that determination is always made by the hospital or blood bank at the
+        time of donation.</p>
+
+      <h5>3. Account Responsibilities</h5>
+      <p>You're responsible for the accuracy of the information you post, including your blood group,
+        availability, and contact details, and for keeping your login credentials secure.</p>
+
+      <h5>4. Acceptable Use</h5>
+      <p>Don't use Blood Finder to post false requests, harass other members, or contact donors for
+        anything unrelated to blood donation. Accounts that misuse the platform may be suspended.</p>
+
+      <h5>5. No Guarantee of Outcome</h5>
+      <p>While we aim to connect donors and recipients as quickly as possible, we cannot guarantee that a
+        matching donor will be available, that a donor will respond, or that a specific blood request will
+        be fulfilled in time.</p>
+
+      <h5>6. Limitation of Liability</h5>
+      <p>Blood Finder is provided "as is." We are not liable for medical outcomes, missed connections, or
+        disputes between members arising from use of the platform.</p>
+
+      <h5>7. Changes to the Service</h5>
+      <p>We may update, suspend, or discontinue features of Blood Finder at any time as the platform
+        evolves.</p>
+
+      <h5>8. Contact</h5>
+      <p>Questions about these terms can be sent through our <a href="{% url 'core:contact' %}">Contact page</a>.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

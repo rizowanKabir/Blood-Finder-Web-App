@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}{{ blood_request.patient_name }} needs {{ blood_request.blood_group_needed }} — Blood Finder{% endblock %}
+{% block content %}
+<section class="py-5">
+  <div class="container" style="max-width:760px;">
+    <div class="glass-card p-4 p-md-5 fade-in-up">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+        <div>
+          <span class="badge {{ blood_request.urgency_badge_class }} me-1">{{ blood_request.get_urgency_display }}</span>
+          <span class="badge {{ blood_request.status_badge_class }}">{{ blood_request.get_status_display }}</span>
+        </div>
+        <div class="blood-group-chip blood-group-chip-lg">{{ blood_request.blood_group_needed }}</div>
+      </div>
+
+      <h3 class="fw-700 mb-1">{{ blood_request.patient_name }}</h3>
+      <p class="text-muted mb-4"><i class="bi bi-hospital me-1"></i>{{ blood_request.hospital }} · {{ blood_request.location }}</p>
+
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3"><strong class="d-block small-label">Units Needed</strong>{{ blood_request.units_needed }}</div>
+        <div class="col-6 col-md-3"><strong class="d-block small-label">Required By</strong>{{ blood_request.required_date }}</div>
+        <div class="col-6 col-md-3"><strong class="d-block small-label">Posted</strong>{{ blood_request.created_at|timesince }} ago</div>
+        <div class="col-6 col-md-3"><strong class="d-block small-label">Posted By</strong>{{ blood_request.requested_by.get_full_name|default:blood_request.requested_by.username }}</div>
+      </div>
+
+      {% if blood_request.description %}
+      <div class="mb-4">
+        <strong class="d-block small-label mb-1">Additional Details</strong>
+        <p class="text-muted mb-0">{{ blood_request.description }}</p>
+      </div>
+      {% endif %}
+
+      {% if request.user.is_authenticated %}
+      <div class="alert-soft-info mb-4">
+        <i class="bi bi-person-lines-fill me-2"></i>
+        <strong>{{ blood_request.contact_person }}</strong> · {{ blood_request.contact_phone }}
+      </div>
+      {% else %}
+      <div class="alert-soft-info mb-4"><i class="bi bi-lock-fill me-2"></i>
+        <a href="{% url 'accounts:login' %}">Login</a> to view contact details.</div>
+      {% endif %}
+
+      {% if blood_request.accepted_by %}
+      <p class="text-muted small mb-4"><i class="bi bi-check-circle-fill text-success me-1"></i>
+        Accepted by {{ blood_request.accepted_by.get_full_name|default:blood_request.accepted_by.username }}</p>
+      {% endif %}
+
+      <div class="d-flex gap-2 flex-wrap">
+        {% if blood_request.status == 'open' and request.user.is_authenticated and request.user != blood_request.requested_by %}
+          <form method="post" action="{% url 'blood_requests:accept' blood_request.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-gradient"><i class="bi bi-hand-thumbs-up-fill me-1"></i>Accept This Request</button>
+          </form>
+        {% endif %}
+
+        {% if blood_request.status == 'accepted' and can_complete %}
+          <form method="post" action="{% url 'blood_requests:complete' blood_request.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-glass"><i class="bi bi-check-circle-fill me-1"></i>Mark Completed</button>
+          </form>
+        {% endif %}
+
+        {% if can_manage %}
+          <a href="{% url 'blood_requests:edit' blood_request.pk %}" class="btn btn-outline-glass"><i class="bi bi-pencil-fill me-1"></i>Edit</a>
+          <a href="{% url 'blood_requests:delete' blood_request.pk %}" class="btn btn-outline-danger"><i class="bi bi-trash-fill me-1"></i>Delete</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

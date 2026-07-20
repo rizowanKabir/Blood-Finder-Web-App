@@ -1,0 +1,50 @@
+<footer class="bf-footer">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4 col-md-6">
+        <a class="bf-brand mb-3 d-inline-block" href="{% url 'core:home' %}">
+          <i class="bi bi-droplet-half"></i> <span>Blood<strong>Finder</strong></span>
+        </a>
+        <p class="footer-text">A community platform connecting blood donors with people who need them —
+          fast search, verified profiles, and real-time requests.</p>
+        <div class="social-icons">
+          <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-6">
+        <h6 class="footer-heading">Quick Links</h6>
+        <ul class="footer-links">
+          <li><a href="{% url 'donors:list' %}">Find Donors</a></li>
+          <li><a href="{% url 'blood_requests:list' %}">Blood Requests</a></li>
+          <li><a href="{% url 'blood_requests:create' %}">Request Blood</a></li>
+          <li><a href="{% url 'donors:create' %}">Become a Donor</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-md-6">
+        <h6 class="footer-heading">Company</h6>
+        <ul class="footer-links">
+          <li><a href="{% url 'core:about' %}">About Us</a></li>
+          <li><a href="{% url 'core:contact' %}">Contact</a></li>
+          <li><a href="{% url 'core:privacy' %}">Privacy Policy</a></li>
+          <li><a href="{% url 'core:terms' %}">Terms of Service</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <h6 class="footer-heading">Get in Touch</h6>
+        <ul class="footer-links">
+          <li><i class="bi bi-geo-alt-fill me-2"></i>Dhaka Division, Bangladesh</li>
+          <li><i class="bi bi-envelope-fill me-2"></i>hello@bloodfinder.example</li>
+          <li><i class="bi bi-telephone-fill me-2"></i>+880 1773155XXX</li>
+        </ul>
+      </div>
+    </div>
+    <hr class="footer-divider">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 footer-bottom">
+      <span>&copy; {% now "Y" %} Blood Finder. All rights reserved.</span>
+      <span>Made with <i class="bi bi-heart-fill text-danger"></i> to help save lives.</span>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Edit Profile — Blood Finder{% endblock %}
+{% block content %}
+<section class="auth-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="glass-card p-4 p-md-5 fade-in-up">
+          <h3 class="fw-700 mb-4 text-center">Edit Profile</h3>
+          <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            <div class="text-center mb-4">
+              <img id="imagePreview" class="profile-pic-preview"
+                   src="{% if object.profile_picture %}{{ object.profile_picture.url }}{% else %}data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23FFD6E7'/%3E%3C/svg%3E{% endif %}" alt="Profile preview">
+              <div class="mt-2">
+                <label for="{{ form.profile_picture.id_for_label }}" class="btn btn-outline-glass btn-sm-gradient">Change Photo</label>
+                {{ form.profile_picture }}
+              </div>
+            </div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small-label">First Name</label>
+                {{ form.first_name }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small-label">Last Name</label>
+                {{ form.last_name }}
+              </div>
+              <div class="col-12">
+                <label class="form-label small-label">Phone Number</label>
+                {{ form.phone_number }}
+              </div>
+            </div>
+            <button type="submit" class="btn btn-gradient w-100 btn-lg-gradient mt-4">Save Changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

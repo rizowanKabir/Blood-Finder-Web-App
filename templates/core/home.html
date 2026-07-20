@@ -1,0 +1,276 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Blood Finder — Donate Blood, Save Lives{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero-section">
+  <div class="hero-blob hero-blob-1"></div>
+  <div class="hero-blob hero-blob-2"></div>
+  <div class="container">
+    <div class="row align-items-center gy-5">
+      <div class="col-lg-6 fade-in-up">
+        <span class="hero-eyebrow"><i class="bi bi-heart-pulse-fill me-1"></i> Every 2 seconds, someone needs blood</span>
+        <h1 class="hero-heading">Donate Blood,<br><span class="gradient-text">Save Lives</span></h1>
+        <p class="hero-subtext">Search verified donors near you in seconds, or post a request and let
+          nearby donors find you. Real people, real emergencies, real impact.</p>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="{% url 'donors:list' %}" class="btn btn-gradient btn-lg-gradient"><i class="bi bi-search me-2"></i>Find Donors</a>
+          <a href="{% url 'blood_requests:create' %}" class="btn btn-outline-glass btn-lg-outline"><i class="bi bi-droplet me-2"></i>Request Blood</a>
+        </div>
+      </div>
+      <div class="col-lg-6 fade-in-up delay-1">
+        <div class="hero-art-wrap">
+          <svg viewBox="0 0 400 400" class="hero-svg" role="img" aria-label="Blood drop illustration">
+            <defs>
+              <linearGradient id="dropGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FF4F8B"/>
+                <stop offset="100%" stop-color="#00D9FF"/>
+              </linearGradient>
+            </defs>
+            <circle cx="200" cy="200" r="150" fill="url(#dropGrad)" opacity="0.12"/>
+            <circle cx="200" cy="200" r="110" fill="url(#dropGrad)" opacity="0.16"/>
+            <path d="M200 70 C240 140 300 190 300 250 C300 305 255 340 200 340 C145 340 100 305 100 250 C100 190 160 140 200 70 Z"
+                  fill="url(#dropGrad)"/>
+            <path d="M160 230 C160 260 180 280 205 280" stroke="rgba(255,255,255,0.55)" stroke-width="10" stroke-linecap="round" fill="none"/>
+          </svg>
+          <div class="hero-float-card card-float-1"><i class="bi bi-people-fill"></i><div><strong id="statDonorsHero">{{ available_donors_count }}</strong><span>Active Donors</span></div></div>
+          <div class="hero-float-card card-float-2"><i class="bi bi-geo-alt-fill"></i><div><strong id="statCitiesHero">{{ cities_covered_count }}</strong><span>Cities Covered</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEARCH WIDGET -->
+    <div class="search-widget glass-card fade-in-up delay-2" id="quickSearch">
+      <form action="{% url 'donors:list' %}" method="get" class="row g-3 align-items-end" id="heroSearchForm"
+            data-search-api-url="{% url 'donors:quick_search_api' %}">
+        <div class="col-md-3">
+          <label class="form-label small-label">Blood Group</label>
+          <select name="blood_group" class="form-select custom-input">
+            <option value="">Any</option>
+            {% for code, label in donor_blood_groups %}<option value="{{ code }}">{{ label }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small-label">Division</label>
+          <select name="division" class="form-select custom-input">
+            <option value="">Any</option>
+            {% for code, label in donor_divisions %}<option value="{{ code }}">{{ label }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small-label">District</label>
+          <input type="text" name="district" class="form-control custom-input" placeholder="e.g. Any">
+        </div>
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-gradient w-100"><i class="bi bi-search me-1"></i> Search Donors</button>
+        </div>
+      </form>
+      <div id="instantResultsPreview" class="instant-results"></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-section">
+  <div class="container">
+    <div class="row g-4 text-center">
+      <div class="col-6 col-md-3">
+        <div class="stat-card glass-card fade-in-up"><i class="bi bi-people-fill"></i>
+          <div class="stat-number" data-count="{{ available_donors_count }}">0</div><div class="stat-label">Available Donors</div></div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card glass-card fade-in-up delay-1"><i class="bi bi-clipboard2-pulse-fill"></i>
+          <div class="stat-number" data-count="{{ total_requests_count }}">0</div><div class="stat-label">Blood Requests</div></div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card glass-card fade-in-up delay-2"><i class="bi bi-geo-alt-fill"></i>
+          <div class="stat-number" data-count="{{ cities_covered_count }}">0</div><div class="stat-label">Cities Covered</div></div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card glass-card fade-in-up delay-3"><i class="bi bi-heart-fill"></i>
+          <div class="stat-number" data-count="{{ total_donors_count }}">0</div><div class="stat-label">Registered Donors</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if urgent_requests %}
+<!-- URGENT REQUESTS TICKER -->
+<section class="urgent-section">
+  <div class="container">
+    <h5 class="urgent-heading"><i class="bi bi-broadcast-pin me-2"></i>Urgent Requests Right Now</h5>
+    <div class="row g-3">
+      {% for r in urgent_requests %}
+      <div class="col-md-6 col-lg-3">
+        <a href="{{ r.get_absolute_url }}" class="urgent-card glass-card fade-in-up">
+          <span class="badge {{ r.urgency_badge_class }} mb-2">{{ r.get_urgency_display }}</span>
+          <div class="fw-700">{{ r.blood_group_needed }} needed</div>
+          <div class="text-muted small">{{ r.hospital }} · {{ r.location }}</div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works-section">
+  <div class="container">
+    <div class="text-center mb-5 fade-in-up">
+      <span class="section-eyebrow">Simple Process</span>
+      <h2 class="section-heading">How Blood Finder Works</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="step-card glass-card fade-in-up">
+          <div class="step-icon"><i class="bi bi-person-plus-fill"></i></div>
+          <h5>Create an Account</h5>
+          <p>Sign up in under a minute with just your name, email, and phone.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="step-card glass-card fade-in-up delay-1">
+          <div class="step-icon"><i class="bi bi-droplet-fill"></i></div>
+          <h5>Register or Search</h5>
+          <p>Become a donor, or search available donors by blood group and location.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="step-card glass-card fade-in-up delay-2">
+          <div class="step-icon"><i class="bi bi-chat-heart-fill"></i></div>
+          <h5>Connect Directly</h5>
+          <p>Message or call through the contact details on a donor or request profile.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="step-card glass-card fade-in-up delay-3">
+          <div class="step-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+          <h5>Donate & Save Lives</h5>
+          <p>Complete the donation and track your impact from your dashboard.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if showcase_donors %}
+<!-- DONOR SHOWCASE -->
+<section class="donors-section">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2 fade-in-up">
+      <div>
+        <span class="section-eyebrow">Meet the Community</span>
+        <h2 class="section-heading mb-0">Featured Donors</h2>
+      </div>
+      <a href="{% url 'donors:list' %}" class="btn btn-outline-glass">View All Donors <i class="bi bi-arrow-right ms-1"></i></a>
+    </div>
+    <div class="row g-4">
+      {% for donor in showcase_donors %}
+      <div class="col-sm-6 col-lg-3">
+        <a href="{{ donor.get_absolute_url }}" class="donor-card glass-card fade-in-up text-decoration-none">
+          {% if donor.is_featured %}<span class="badge featured-badge"><i class="bi bi-star-fill"></i> Featured</span>{% endif %}
+          <div class="donor-avatar">
+            {% if donor.user.profile_picture %}<img src="{{ donor.user.profile_picture.url }}" alt="{{ donor.get_full_name }}">
+            {% else %}<i class="bi bi-person-fill"></i>{% endif %}
+          </div>
+          <div class="blood-group-chip">{{ donor.blood_group }}</div>
+          <h6 class="donor-name">{{ donor.get_full_name }}</h6>
+          <div class="donor-location text-muted small"><i class="bi bi-geo-alt-fill me-1"></i>{{ donor.district }}, {{ donor.division }}</div>
+          <span class="badge {% if donor.is_available %}bg-success{% else %}bg-secondary{% endif %} mt-2">
+            {% if donor.is_available %}Available{% else %}Unavailable{% endif %}</span>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if testimonials %}
+<!-- TESTIMONIALS -->
+<section class="testimonials-section">
+  <div class="container">
+    <div class="text-center mb-5 fade-in-up">
+      <span class="section-eyebrow">Real Stories</span>
+      <h2 class="section-heading">What People Say</h2>
+    </div>
+    <div id="testimonialCarousel" class="carousel slide fade-in-up" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        {% for t in testimonials %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+          <div class="testimonial-card glass-card mx-auto">
+            <div class="testimonial-stars">{% for i in "12345" %}{% if forloop.counter <= t.rating %}<i class="bi bi-star-fill"></i>{% else %}<i class="bi bi-star"></i>{% endif %}{% endfor %}</div>
+            <p class="testimonial-message">&ldquo;{{ t.message }}&rdquo;</p>
+            <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+              <div class="testimonial-avatar"><i class="bi bi-person-fill"></i></div>
+              <div class="text-start">
+                <div class="fw-700">{{ t.name }}</div>
+                {% if t.role %}<div class="text-muted small">{{ t.role }}</div>{% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% if testimonials|length > 1 %}
+      <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+        <span class="carousel-ctrl-icon"><i class="bi bi-chevron-left"></i></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+        <span class="carousel-ctrl-icon"><i class="bi bi-chevron-right"></i></span>
+      </button>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if faqs %}
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="container" style="max-width:800px;">
+    <div class="text-center mb-5 fade-in-up">
+      <span class="section-eyebrow">Got Questions?</span>
+      <h2 class="section-heading">Frequently Asked Questions</h2>
+    </div>
+    <div class="accordion fade-in-up" id="faqAccordion">
+      {% for faq in faqs %}
+      <div class="accordion-item bf-accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button"
+                  data-bs-toggle="collapse" data-bs-target="#faq{{ forloop.counter }}">
+            {{ faq.question }}
+          </button>
+        </h2>
+        <div id="faq{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
+             data-bs-parent="#faqAccordion">
+          <div class="accordion-body">{{ faq.answer }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- FINAL CTA -->
+<section class="final-cta-section">
+  <div class="container">
+    <div class="cta-banner fade-in-up">
+      <h2>Ready to make a difference?</h2>
+      <p>Join {{ total_donors_count }}+ donors already saving lives in your community.</p>
+      <a href="{% if user.is_authenticated %}{% url 'donors:create' %}{% else %}{% url 'accounts:register' %}{% endif %}"
+         class="btn btn-light-gradient">Get Started Today <i class="bi bi-arrow-right ms-1"></i></a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/counters.js' %}"></script>
+<script src="{% static 'js/search.js' %}"></script>
+{% endblock %}

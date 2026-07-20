@@ -1,0 +1,36 @@
+databases:
+  - name: bloodfinder-db
+    plan: free
+    databaseName: bloodfinder
+    user: bloodfinder
+
+services:
+  - type: web
+    plan: free
+    name: bloodfinder
+    runtime: python
+    buildCommand: 'bash build.sh'
+    startCommand: 'gunicorn bloodfinder.wsgi:application --workers 3'
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.3
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bloodfinder-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: 'False'
+      - key: TIME_ZONE
+        value: Asia/Dhaka
+      # Optional: auto-creates a Django admin account on first deploy
+      # (safe on every redeploy after that too — it just skips).
+      # Change the email below, then after deploying, open this service's
+      # "Environment" tab on Render to see the auto-generated password.
+      - key: DJANGO_SUPERUSER_EMAIL
+        value: admin@example.com
+      - key: DJANGO_SUPERUSER_USERNAME
+        value: admin
+      - key: DJANGO_SUPERUSER_PASSWORD
+        generateValue: true

@@ -1,0 +1,34 @@
+/* =========================================================================
+   BLOOD FINDER — ANIMATIONS
+   Scroll-reveal fade-ins + small motion utilities. Respects
+   prefers-reduced-motion via the override in style.css.
+   ========================================================================= */
+
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(.4,0,.2,1), transform 0.7s cubic-bezier(.4,0,.2,1);
+}
+.fade-in-up.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.delay-1.in-view { transition-delay: 0.1s; }
+.delay-2.in-view { transition-delay: 0.2s; }
+.delay-3.in-view { transition-delay: 0.3s; }
+
+/* Fallback: if JS hasn't run yet (e.g. no-JS), content should still be visible */
+.no-js .fade-in-up { opacity: 1; transform: none; }
+
+@keyframes bf-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,79,139,0.4); }
+  50% { box-shadow: 0 0 0 10px rgba(255,79,139,0); }
+}
+.pulse-badge { animation: bf-pulse 2s infinite; }
+
+@keyframes bf-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.toast-alert { animation: bf-fade-in 0.35s ease; }

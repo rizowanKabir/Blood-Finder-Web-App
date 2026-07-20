@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Register — Blood Finder{% endblock %}
+{% block content %}
+<section class="auth-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+        <div class="glass-card p-4 p-md-5 fade-in-up">
+          <div class="text-center mb-4">
+            <div class="auth-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+            <h3 class="fw-700 mt-3">Create Your Account</h3>
+            <p class="text-muted">Join the community — you can become a donor anytime after signing up.</p>
+          </div>
+          <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small-label">First Name</label>
+                {{ form.first_name }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small-label">Last Name</label>
+                {{ form.last_name }}
+              </div>
+              <div class="col-12">
+                <label class="form-label small-label">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}<div class="field-error">{{ form.username.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-12">
+                <label class="form-label small-label">Email</label>
+                {{ form.email }}
+                {% if form.email.errors %}<div class="field-error">{{ form.email.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-12">
+                <label class="form-label small-label">Phone Number</label>
+                {{ form.phone_number }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small-label">Password</label>
+                <div class="position-relative">
+                  {{ form.password1 }}
+                  <button type="button" class="password-toggle-btn" data-target="{{ form.password1.id_for_label }}"><i class="bi bi-eye"></i></button>
+                </div>
+                {% if form.password1.errors %}<div class="field-error">{{ form.password1.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small-label">Confirm Password</label>
+                <div class="position-relative">
+                  {{ form.password2 }}
+                  <button type="button" class="password-toggle-btn" data-target="{{ form.password2.id_for_label }}"><i class="bi bi-eye"></i></button>
+                </div>
+                {% if form.password2.errors %}<div class="field-error">{{ form.password2.errors.0 }}</div>{% endif %}
+              </div>
+            </div>
+            <button type="submit" class="btn btn-gradient w-100 btn-lg-gradient mt-4">Create Account</button>
+          </form>
+          <p class="text-center mt-4 mb-0 text-muted">Already have an account?
+            <a href="{% url 'accounts:login' %}" class="small-link fw-600">Login</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

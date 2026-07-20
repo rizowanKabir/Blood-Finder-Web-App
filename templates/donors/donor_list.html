@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}Find Blood Donors — Blood Finder{% endblock %}
+{% block content %}
+
+<section class="page-hero page-hero-sm">
+  <div class="container text-center fade-in-up">
+    <span class="section-eyebrow">Donor Directory</span>
+    <h1 class="page-hero-heading">Find a <span class="gradient-text">Blood Donor</span></h1>
+    <p class="page-hero-subtext">{{ result_count }} donor{{ result_count|pluralize }} match your search</p>
+  </div>
+</section>
+
+<section class="pb-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-3">
+        <form method="get" class="glass-card p-4 filter-sidebar fade-in-up" id="donorFilterForm">
+          <h6 class="fw-700 mb-3"><i class="bi bi-funnel-fill me-2"></i>Search Filters</h6>
+          <div class="mb-3">
+            <label class="form-label small-label">Blood Group</label>
+            {{ search_form.blood_group }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label small-label">Division</label>
+            {{ search_form.division }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label small-label">District</label>
+            {{ search_form.district }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label small-label">Area</label>
+            {{ search_form.area }}
+          </div>
+          <div class="form-check mb-3">
+            {{ search_form.available_only }}
+            <label class="form-check-label" for="{{ search_form.available_only.id_for_label }}">Available only</label>
+          </div>
+          <button type="submit" class="btn btn-gradient w-100">Apply Filters</button>
+          <a href="{% url 'donors:list' %}" class="btn btn-link w-100 mt-2 text-muted">Clear Filters</a>
+        </form>
+      </div>
+
+      <div class="col-lg-9">
+        {% if donors %}
+        <div class="row g-4">
+          {% for donor in donors %}
+          <div class="col-sm-6 col-xl-4">
+            <a href="{{ donor.get_absolute_url }}" class="donor-card glass-card fade-in-up text-decoration-none">
+              {% if donor.is_featured %}<span class="badge featured-badge"><i class="bi bi-star-fill"></i> Featured</span>{% endif %}
+              <div class="donor-avatar">
+                {% if donor.user.profile_picture %}<img src="{{ donor.user.profile_picture.url }}" alt="{{ donor.get_full_name }}">
+                {% else %}<i class="bi bi-person-fill"></i>{% endif %}
+              </div>
+              <div class="blood-group-chip">{{ donor.blood_group }}</div>
+              <h6 class="donor-name">{{ donor.get_full_name }}</h6>
+              <div class="donor-location text-muted small"><i class="bi bi-geo-alt-fill me-1"></i>{{ donor.area }}, {{ donor.district }}</div>
+              <div class="d-flex gap-1 justify-content-center mt-2 flex-wrap">
+                <span class="badge {% if donor.is_available %}bg-success{% else %}bg-secondary{% endif %}">
+                  {% if donor.is_available %}Available{% else %}Unavailable{% endif %}</span>
+                {% if donor.is_eligible_to_donate %}
+                  <span class="badge bg-info text-dark">Eligible Now</span>
+                {% endif %}
+              </div>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+        <nav class="mt-5 d-flex justify-content-center">
+          <ul class="pagination bf-pagination">
+            {% if page_obj.has_previous %}
+              <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&{{ querystring }}"><i class="bi bi-chevron-left"></i></a></li>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+              <li class="page-item {% if num == page_obj.number %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}&{{ querystring }}">{{ num }}</a>
+              </li>
+            {% endfor %}
+            {% if page_obj.has_next %}
+              <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&{{ querystring }}"><i class="bi bi-chevron-right"></i></a></li>
+            {% endif %}
+          </ul>
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="glass-card p-5 text-center fade-in-up">
+          <i class="bi bi-search display-4 text-muted mb-3 d-block"></i>
+          <h5>No donors match these filters</h5>
+          <p class="text-muted">Try widening your search, or check back soon — new donors join every day.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

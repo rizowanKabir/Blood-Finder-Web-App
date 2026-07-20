@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — Blood Finder{% endblock %}
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4 fade-in-up">
+      <h2 class="fw-700 mb-0">Welcome back, {{ request.user.first_name|default:request.user.username }} 👋</h2>
+      {% if not request.user.is_email_verified %}
+        <form method="post" action="{% url 'accounts:resend_verification' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-glass btn-sm-gradient"><i class="bi bi-envelope-exclamation me-1"></i>Verify Email</button>
+        </form>
+      {% endif %}
+    </div>
+
+    <div class="row g-4 mb-4">
+      <div class="col-md-4">
+        <div class="glass-card p-4 fade-in-up">
+          <div class="d-flex justify-content-between mb-2">
+            <span class="small-label">Profile Completion</span>
+            <strong>{{ profile_completion }}%</strong>
+          </div>
+          <div class="progress bf-progress">
+            <div class="progress-bar bf-progress-bar" style="width:{{ profile_completion }}%"></div>
+          </div>
+          {% if profile_completion < 100 %}
+          <a href="{% url 'dashboard:edit_profile' %}" class="small-link d-inline-block mt-2">Complete your profile <i class="bi bi-arrow-right"></i></a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="glass-card p-4 fade-in-up delay-1 text-center">
+          <i class="bi bi-clipboard2-pulse-fill fs-2 gradient-text"></i>
+          <div class="fs-3 fw-700 mt-2">{{ my_requests_count }}</div>
+          <div class="text-muted small">My Blood Requests ({{ my_open_requests_count }} open)</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="glass-card p-4 fade-in-up delay-2 text-center">
+          <i class="bi bi-heart-pulse-fill fs-2 gradient-text"></i>
+          <div class="fs-3 fw-700 mt-2">{{ my_donations_count }}</div>
+          <div class="text-muted small">Completed Donations</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-7">
+        <div class="glass-card p-4 fade-in-up h-100">
+          <h5 class="fw-700 mb-3"><i class="bi bi-droplet-fill me-2"></i>Donor Status</h5>
+          {% if donor_profile %}
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="blood-group-chip">{{ donor_profile.blood_group }}</div>
+              <div>
+                <span class="badge {% if donor_profile.is_available %}bg-success{% else %}bg-secondary{% endif %}">
+                  {% if donor_profile.is_available %}Available{% else %}Unavailable{% endif %}</span>
+                <div class="text-muted small mt-1">{{ donor_profile.district }}, {{ donor_profile.division }}</div>
+              </div>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+              <a href="{% url 'donors:edit' donor_profile.pk %}" class="btn btn-outline-glass btn-sm-gradient">Edit Donor Profile</a>
+              <form method="post" action="{% url 'donors:toggle_availability' donor_profile.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-gradient btn-sm-gradient">
+                  {% if donor_profile.is_available %}Mark Unavailable{% else %}Mark Available{% endif %}</button>
+              </form>
+            </div>
+          {% else %}
+            <p class="text-muted">You're not registered as a donor yet.</p>
+            <a href="{% url 'donors:create' %}" class="btn btn-gradient">Become a Donor</a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="glass-card p-4 fade-in-up h-100">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-700 mb-0"><i class="bi bi-bell-fill me-2"></i>Recent Notifications</h5>
+            <a href="{% url 'dashboard:notifications' %}" class="small-link">View All</a>
+          </div>
+          {% if recent_notifications %}
+            <ul class="list-unstyled notif-list">
+              {% for n in recent_notifications %}
+                <li class="{% if not n.is_read %}unread{% endif %}">
+                  <form method="post" action="{% url 'dashboard:mark_notification_read' n.pk %}" class="notif-item-form">
+                    {% csrf_token %}
+                    <button type="submit" class="notif-item-btn">
+                      <strong>{{ n.title }}</strong>
+                      <span class="d-block text-muted small">{{ n.message|truncatechars:70 }}</span>
+                    </button>
+                  </form>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted mb-0">No notifications yet.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap mt-4 fade-in-up">
+      <a href="{% url 'dashboard:my_activity' %}" class="btn btn-outline-glass">My Requests &amp; Donations</a>
+      <a href="{% url 'dashboard:edit_profile' %}" class="btn btn-outline-glass">Edit Profile</a>
+      <a href="{% url 'dashboard:change_password' %}" class="btn btn-outline-glass">Change Password</a>
+      {% if request.user.is_staff %}<a href="{% url 'dashboard:admin_stats' %}" class="btn btn-outline-glass">Admin Stats</a>{% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

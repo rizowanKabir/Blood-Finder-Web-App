@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Login — Blood Finder{% endblock %}
+{% block content %}
+<section class="auth-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-7">
+        <div class="glass-card p-4 p-md-5 fade-in-up">
+          <div class="text-center mb-4">
+            <div class="auth-icon"><i class="bi bi-droplet-half"></i></div>
+            <h3 class="fw-700 mt-3">Welcome Back</h3>
+            <p class="text-muted">Login to find donors or manage your requests.</p>
+          </div>
+          <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label small-label">Email</label>
+              {{ form.username }}
+              {% if form.username.errors %}<div class="field-error">{{ form.username.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="mb-2">
+              <label class="form-label small-label">Password</label>
+              <div class="position-relative">
+                {{ form.password }}
+                <button type="button" class="password-toggle-btn" data-target="{{ form.password.id_for_label }}">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+            </div>
+            {% if form.non_field_errors %}<div class="field-error mb-2">{{ form.non_field_errors.0 }}</div>{% endif %}
+            <div class="text-end mb-3">
+              <a href="{% url 'accounts:password_reset' %}" class="small-link">Forgot password?</a>
+            </div>
+            <button type="submit" class="btn btn-gradient w-100 btn-lg-gradient">Login</button>
+          </form>
+          <p class="text-center mt-4 mb-0 text-muted">Don't have an account?
+            <a href="{% url 'accounts:register' %}" class="small-link fw-600">Register</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

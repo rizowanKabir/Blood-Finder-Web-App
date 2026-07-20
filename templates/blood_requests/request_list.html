@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Blood Requests — Blood Finder{% endblock %}
+{% block content %}
+
+<section class="page-hero page-hero-sm">
+  <div class="container text-center fade-in-up">
+    <span class="section-eyebrow">Active Needs</span>
+    <h1 class="page-hero-heading">Current <span class="gradient-text">Blood Requests</span></h1>
+    <p class="page-hero-subtext">{{ result_count }} request{{ result_count|pluralize }} found</p>
+    <a href="{% url 'blood_requests:create' %}" class="btn btn-gradient btn-lg-gradient mt-2"><i class="bi bi-plus-circle-fill me-2"></i>Post a Blood Request</a>
+  </div>
+</section>
+
+<section class="pb-5">
+  <div class="container">
+    <form method="get" class="glass-card p-3 mb-4 fade-in-up">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-3">{{ filter_form.blood_group_needed }}</div>
+        <div class="col-md-3">{{ filter_form.urgency }}</div>
+        <div class="col-md-3">{{ filter_form.status }}</div>
+        <div class="col-md-3"><button type="submit" class="btn btn-gradient w-100">Filter</button></div>
+      </div>
+    </form>
+
+    {% if requests %}
+    <div class="table-responsive-wrapper">
+      <div class="row g-4">
+        {% for r in requests %}
+        <div class="col-md-6">
+          <a href="{{ r.get_absolute_url }}" class="request-card glass-card fade-in-up text-decoration-none d-block">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <span class="badge {{ r.urgency_badge_class }} me-1">{{ r.get_urgency_display }}</span>
+                <span class="badge {{ r.status_badge_class }}">{{ r.get_status_display }}</span>
+              </div>
+              <div class="blood-group-chip blood-group-chip-sm">{{ r.blood_group_needed }}</div>
+            </div>
+            <h5 class="fw-700 mt-3 mb-1">{{ r.patient_name }}</h5>
+            <p class="text-muted small mb-1"><i class="bi bi-hospital me-1"></i>{{ r.hospital }}</p>
+            <p class="text-muted small mb-1"><i class="bi bi-geo-alt-fill me-1"></i>{{ r.location }}</p>
+            <p class="text-muted small mb-0"><i class="bi bi-calendar-event me-1"></i>Needed by {{ r.required_date }}</p>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% if is_paginated %}
+    <nav class="mt-5 d-flex justify-content-center">
+      <ul class="pagination bf-pagination">
+        {% if page_obj.has_previous %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&{{ querystring }}"><i class="bi bi-chevron-left"></i></a></li>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+          <li class="page-item {% if num == page_obj.number %}active{% endif %}">
+            <a class="page-link" href="?page={{ num }}&{{ querystring }}">{{ num }}</a>
+          </li>
+        {% endfor %}
+        {% if page_obj.has_next %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&{{ querystring }}"><i class="bi bi-chevron-right"></i></a></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+    {% else %}
+    <div class="glass-card p-5 text-center fade-in-up">
+      <i class="bi bi-clipboard2-check display-4 text-muted mb-3 d-block"></i>
+      <h5>No requests match these filters</h5>
+      <p class="text-muted">Great news if you were hoping for an empty list — try clearing filters to see all activity.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

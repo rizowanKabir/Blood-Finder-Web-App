@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Email Verification — Blood Finder{% endblock %}
+{% block content %}
+<section class="auth-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-7">
+        <div class="glass-card p-4 p-md-5 text-center fade-in-up">
+          {% if success %}
+            <div class="auth-icon"><i class="bi bi-patch-check-fill"></i></div>
+            <h3 class="fw-700 mt-3">Email Verified!</h3>
+            <p class="text-muted">Thanks for confirming your email address.</p>
+          {% else %}
+            <div class="auth-icon"><i class="bi bi-x-octagon-fill"></i></div>
+            <h3 class="fw-700 mt-3">Verification Failed</h3>
+            <p class="text-muted">This verification link is invalid or has expired.</p>
+          {% endif %}
+          <a href="{% url 'dashboard:home' %}" class="btn btn-gradient mt-2">Go to Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

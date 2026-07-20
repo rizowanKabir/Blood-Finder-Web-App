@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}About Us — Blood Finder{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="container text-center fade-in-up">
+    <span class="section-eyebrow">Our Story</span>
+    <h1 class="page-hero-heading">Built to Close the Gap Between <span class="gradient-text">Donors and Patients</span></h1>
+    <p class="page-hero-subtext mx-auto" style="max-width:680px;">Blood Finder started with a simple frustration: when a hospital
+      needs a specific blood group urgently, finding the right donor in time is still done through phone
+      chains and word of mouth. We built a platform to make that search instant.</p>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="glass-card p-4 h-100 fade-in-up">
+          <div class="step-icon mb-3"><i class="bi bi-bullseye"></i></div>
+          <h5>Our Mission</h5>
+          <p class="text-muted mb-0">Make finding a compatible, willing blood donor as fast as searching for a
+            restaurant nearby — no phone trees, no guesswork.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="glass-card p-4 h-100 fade-in-up delay-1">
+          <div class="step-icon mb-3"><i class="bi bi-shield-check"></i></div>
+          <h5>How We Verify Trust</h5>
+          <p class="text-muted mb-0">Donor contact details are only visible to registered, logged-in members,
+            and every donor controls their own availability status.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="glass-card p-4 h-100 fade-in-up delay-2">
+          <div class="step-icon mb-3"><i class="bi bi-people"></i></div>
+          <h5>Community First</h5>
+          <p class="text-muted mb-0">Every feature — search, requests, notifications — is designed around one
+            outcome: connecting a willing donor to someone who needs them, quickly.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta-section">
+  <div class="container">
+    <div class="cta-banner fade-in-up">
+      <h2>Want to be part of it?</h2>
+      <p>Register today and help build a faster, more reliable blood donation network.</p>
+      <a href="{% url 'accounts:register' %}" class="btn btn-light-gradient">Join Blood Finder <i class="bi bi-arrow-right ms-1"></i></a>
+    </div>
+  </div>
+</section>
+{% endblock %}

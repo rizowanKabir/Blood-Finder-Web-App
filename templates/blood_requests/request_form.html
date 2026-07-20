@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}{% if object %}Edit{% else %}Post a{% endif %} Blood Request — Blood Finder{% endblock %}
+{% block content %}
+<section class="auth-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="glass-card p-4 p-md-5 fade-in-up">
+          <div class="text-center mb-4">
+            <div class="auth-icon"><i class="bi bi-clipboard2-pulse-fill"></i></div>
+            <h3 class="fw-700 mt-3">{% if object %}Edit Blood Request{% else %}Post a Blood Request{% endif %}</h3>
+            <p class="text-muted">Available donors with a matching blood group will be notified instantly.</p>
+          </div>
+          <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small-label">Patient Name</label>
+                {{ form.patient_name }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small-label">Hospital</label>
+                {{ form.hospital }}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small-label">Blood Group Needed</label>
+                {{ form.blood_group_needed }}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small-label">Units Needed</label>
+                {{ form.units_needed }}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small-label">Urgency</label>
+                {{ form.urgency }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small-label">Required Date</label>
+                {{ form.required_date }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small-label">Location</label>
+                {{ form.location }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small-label">Contact Person</label>
+                {{ form.contact_person }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small-label">Contact Phone</label>
+                {{ form.contact_phone }}
+              </div>
+              <div class="col-12">
+                <label class="form-label small-label">Additional Details (optional)</label>
+                {{ form.description }}
+              </div>
+            </div>
+            {% for field in form %}
+              {% if field.errors %}<div class="field-error">{{ field.label }}: {{ field.errors.0 }}</div>{% endif %}
+            {% endfor %}
+            <button type="submit" class="btn btn-gradient w-100 btn-lg-gradient mt-4">
+              {% if object %}Save Changes{% else %}Post Request{% endif %}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

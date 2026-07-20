@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}{% if object %}Edit Donor Profile{% else %}Become a Donor{% endif %} — Blood Finder{% endblock %}
+{% block content %}
+<section class="auth-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="glass-card p-4 p-md-5 fade-in-up">
+          <div class="text-center mb-4">
+            <div class="auth-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+            <h3 class="fw-700 mt-3">{% if object %}Edit Donor Profile{% else %}Become a Donor{% endif %}</h3>
+            <p class="text-muted">Your information helps people in urgent need find you quickly.</p>
+          </div>
+          <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label small-label">Age</label>
+                {{ form.age }}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small-label">Gender</label>
+                {{ form.gender }}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small-label">Blood Group</label>
+                {{ form.blood_group }}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small-label">Weight (kg)</label>
+                {{ form.weight }}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small-label">Division</label>
+                {{ form.division }}
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small-label">District</label>
+                {{ form.district }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small-label">Area</label>
+                {{ form.area }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small-label">Last Donation Date (optional)</label>
+                {{ form.last_donation_date }}
+              </div>
+              <div class="col-12">
+                <label class="form-label small-label">Full Address</label>
+                {{ form.address }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small-label">Occupation (optional)</label>
+                {{ form.occupation }}
+              </div>
+              <div class="col-md-6 d-flex align-items-center mt-4">
+                <div class="form-check">
+                  {{ form.is_available }}
+                  <label class="form-check-label" for="{{ form.is_available.id_for_label }}">Available for donation</label>
+                </div>
+              </div>
+              <div class="col-12">
+                <label class="form-label small-label">Medical Notes (optional)</label>
+                {{ form.medical_notes }}
+              </div>
+            </div>
+            {% for field in form %}
+              {% if field.errors %}<div class="field-error">{{ field.label }}: {{ field.errors.0 }}</div>{% endif %}
+            {% endfor %}
+            <button type="submit" class="btn btn-gradient w-100 btn-lg-gradient mt-4">
+              {% if object %}Save Changes{% else %}Register as Donor{% endif %}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
