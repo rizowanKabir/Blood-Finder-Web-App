@@ -12,3 +12,4 @@ python manage.py migrate
 # Safe to run every time — creates the admin account only if it doesn't
 # exist yet. Only does anything if DJANGO_SUPERUSER_* env vars are set.
 python manage.py create_admin
+
